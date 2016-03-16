@@ -1,20 +1,19 @@
-
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
 config = {
-    'description': 'My Project',
-    'author': 'My Name',
-    'url': 'URL to get it at.',
+    'description': 'TID ML',
+    'author': 'Ricardo Stuven',
+    'url': '',
     'download_url': 'Where to download it.',
-    'author_email': 'My email.',
+    'author_email': 'ricardo.stuven@telefonica.com',
     'version': '0.1',
     'install_requires': ['nose'],
     'packages': ['tidml'],
     'scripts': [],
-    'name': 'projectname'
+    'name': 'tidml'
 }
 
 setup(**config)
