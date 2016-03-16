@@ -1,0 +1,4 @@
+coverage == 4.0.3
+nose-watch == 0.9.1
+pipreqs == 0.4.2
+rednose == 0.4.3
