@@ -71,7 +71,8 @@ class Engine(BaseEngine):
         if isinstance(ctor, six.string_types):
             import importlib
             module_name, class_name = ctor.rsplit(".", 1)
-            ctor = getattr(importlib.import_module(module_name), class_name)
+            module = importlib.import_module(module_name)
+            ctor = getattr(module, class_name)
 
         instance = ctor(params)
 
