@@ -29,11 +29,17 @@ class Engine(BaseEngine):
         :return: Model
         """
         datasource = self._instantiate('datasource')
-        preparator = self._instantiate('preparator')
-        algorithm = self._instantiate('algorithm')
         training_data = datasource.read_training()
+        self._sanity_check(training_data, 'training_data')
+
+        preparator = self._instantiate('preparator')
         prepared_data = preparator.prepare(training_data)
+        self._sanity_check(prepared_data, 'prepared_data')
+
+        algorithm = self._instantiate('algorithm')
         model = algorithm.train(prepared_data)
+        self._sanity_check(model, 'model')
+
         algorithm.persistor.save(model)
 
     def predict(self, query):
@@ -70,6 +76,12 @@ class Engine(BaseEngine):
         instance = ctor(params)
 
         return instance
+
+    @staticmethod
+    def _sanity_check(data, label):
+        # TODO: logging
+        if hasattr(data, 'sanity_check'):
+            data.sanity_check(label)
 
 
 class SimpleEngine(Engine):

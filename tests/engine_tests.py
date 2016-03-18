@@ -19,21 +19,37 @@ def make_test_data():
     df.to_csv(test_data_file, sep='\t', index=False)
 
 
+class DataWithSanityCheck(object):
+    def __init__(self, params, payload):
+        self._params = params
+        self._payload = payload
+
+    @property
+    def payload(self):
+        return self._payload
+
+    def sanity_check(self, label):
+        """Force "insanity" by params, just for testing."""
+        insane = self._params.get('insane', False)
+        if insane:
+            raise RuntimeError(label + ' insane!')
+
+
 class TestDataSource(DataSource):
     def read_training(self):
         import pandas as pd
         df = pd.read_csv(self._params['csv'], sep='\t')
-        return df
+        return DataWithSanityCheck(self.params, df)
 
 
 class TestPreparator(Preparator):
     def prepare(self, data):
-        return data
+        return DataWithSanityCheck(self.params, data.payload)
 
 
 class TestSimpleAlgorithm(Algorithm):
     def train(self, data):
-        return data
+        return DataWithSanityCheck(self.params, data.payload)
 
     def predict(self, model, query):
         return query * 2
@@ -41,7 +57,7 @@ class TestSimpleAlgorithm(Algorithm):
 
 class TestAlgorithm(Algorithm):
     def train(self, data):
-        return data
+        return DataWithSanityCheck(self.params, data.payload)
 
     def predict(self, model, query):
         pass
@@ -60,10 +76,11 @@ class PandasCsvModelPersistor(ModelPersistor):
 
     def load(self):
         import pandas
-        return pandas.read_csv(self._path)
+        data = pandas.read_csv(self._path)
+        return DataWithSanityCheck(self.params, data)
 
     def save(self, model):
-        model.to_csv(self._path, index=False)
+        model.payload.to_csv(self._path, index=False)
 
 
 engine = Engine
@@ -77,7 +94,7 @@ def test_setup():
             'class': "tests.engine_tests.TestDataSource",
             'params': {
                 'csv': test_data_file,
-            }
+            },
         },
         'preparator': {
             'class': TestPreparator,
@@ -101,7 +118,7 @@ def test_simple_engine():
             'class': TestDataSource,
             'params': {
                 'csv': test_data_file,
-            }
+            },
         },
         'algorithm': {
             'class': TestSimpleAlgorithm,
@@ -113,3 +130,60 @@ def test_simple_engine():
     e.train()
     prediction = e.predict(3)
     nt.assert_equals(prediction, 6)
+
+
+def test_insane_datasource():
+    e = Engine({
+        'datasource': {
+            'class': TestDataSource,
+            'params': {
+                'csv': test_data_file,
+                'insane': True,
+            },
+        },
+    })
+    nt.assert_raises_regexp(RuntimeError, 'training_data insane!', e.train)
+
+
+def test_insane_preparator():
+    e = Engine({
+        'datasource': {
+            'class': TestDataSource,
+            'params': {
+                'csv': test_data_file,
+            },
+        },
+        'preparator': {
+            'class': TestPreparator,
+            'params': {
+                'insane': True,
+            },
+        },
+    })
+    nt.assert_raises_regexp(RuntimeError, 'prepared_data insane!', e.train)
+
+
+def test_insane_algorithm():
+    e = Engine({
+        'datasource': {
+            'class': TestDataSource,
+            'params': {
+                'csv': test_data_file,
+            },
+        },
+        'preparator': {
+            'class': TestPreparator,
+        },
+        'algorithm': {
+            'class': TestAlgorithm,
+            'params': {
+                'model.csv': '~/.tidml/tests/model2.csv',  # custom
+                'insane': True,
+            },
+        },
+    })
+    nt.assert_raises_regexp(RuntimeError, 'model insane!', e.train)
+
+
+def test_train():
+    engine.train()
