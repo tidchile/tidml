@@ -9,6 +9,9 @@ def test_cannot_instantiate():
 
 
 class TestModelPersistor(ModelPersistor):
+    def load(self):
+        pass
+
     def save(self, model):
         pass
 

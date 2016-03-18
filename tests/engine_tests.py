@@ -51,9 +51,18 @@ class TestAlgorithm(Algorithm):
 
 
 class PandasCsvModelPersistor(ModelPersistor):
+    # See more http://pandas.pydata.org/pandas-docs/stable/io.html
+
+    def __init__(self, params):
+        super(PandasCsvModelPersistor, self).__init__(params)
+        self._path = params['model.csv']
+
+    def load(self):
+        import pandas
+        return pandas.read_csv(self._path)
+
     def save(self, model):
-        model.to_csv(self._params['model.csv'], index=False)
-        # See more http://pandas.pydata.org/pandas-docs/stable/io.html
+        model.to_csv(self._path, index=False)
 
 
 engine = Engine

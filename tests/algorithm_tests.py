@@ -29,6 +29,9 @@ class TestAlgorithmWithCustomPersistor(Algorithm):
             def save(self, model):
                 pass
 
+            def load(self):
+                pass
+
         return CustomModelPersistor()
 
 

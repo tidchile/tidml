@@ -19,6 +19,13 @@ class ModelPersistor(object):
         :param model: Model
         """
 
+    @abstractmethod
+    def load(self):
+        """
+
+        :return: Model
+        """
+
     @staticmethod
     def prepare_path(path):
         """
@@ -42,6 +49,13 @@ class PickleModelPersistor(ModelPersistor):
             # Support Pandas
             model.to_pickle(path)
         else:
-            import pickle
             with open(path, 'w') as f:
+                import pickle
                 pickle.dump(model, f)
+
+    def load(self):
+        path = self._params['model.pickle']
+        path = self.prepare_path(path)
+        with open(path, 'r') as f:
+            import pickle
+            return pickle.load(f)
