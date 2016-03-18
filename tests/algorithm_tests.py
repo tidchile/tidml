@@ -50,15 +50,3 @@ def test_default_pickle_model_persistor():
 def test_with_custom_model_persistor():
     ds = TestAlgorithmWithCustomPersistor()
     nt.assert_is_instance(ds.persistor, ModelPersistor)
-
-
-def test_builtin_pickle_model_persistor():
-    p = PickleModelPersistor({'model.pickle': '~/.tidml/builtin.pkl'})
-    p.save([1, 2, 3])
-
-
-def test_pandas_pickle_model_persistor():
-    p = PickleModelPersistor({'model.pickle': '~/.tidml/pandas.pkl'})
-    import pandas as pd
-    df = pd.DataFrame([1, 2, 3])
-    p.save(df)

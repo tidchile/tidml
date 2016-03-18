@@ -1,5 +1,5 @@
 import six
-import tidml
+from tidml.preparator import IdentityPreparator
 from abc import ABCMeta, abstractmethod
 
 
@@ -71,7 +71,7 @@ class SimpleEngine(Engine):
         super(SimpleEngine, self).__init__({
             'datasource': params['datasource'],
             'preparator': {
-                'class': tidml.IdentityPreparator,
+                'class': IdentityPreparator,
             },
             'algorithm': params['algorithm'],  # TODO: {'': params['algorithm']}
             # 'serving': tidml.FirstServing,
