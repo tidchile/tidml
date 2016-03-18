@@ -3,9 +3,11 @@ init:
 	pip install -r requirements.txt
 
 test:
+	clear
 	nosetests -v --nocapture --rednose
 
 testw:
+	clear
 	nosetests -v --nocapture --rednose --with-watch
 
 cov:
