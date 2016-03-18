@@ -36,7 +36,18 @@ class Engine(BaseEngine):
         model = algorithm.train(prepared_data)
         algorithm.persistor.save(model)
 
-    def evaluate(self):
+    def predict(self, query):
+        """Predict a query.
+
+        :param query: Query.
+        :return: Prediction.
+        """
+        algorithm = self._instantiate('algorithm')
+        model = algorithm.persistor.load()
+        prediction = algorithm.predict(model, query)
+        return prediction
+
+    def evaluate(self, query):
         """Evaluate the algorithm.
 
         :return: List of evaluation info, and tuple of

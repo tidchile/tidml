@@ -1,5 +1,6 @@
-from tidml import *
+import nose.tools as nt
 from unittest import SkipTest
+from tidml import *
 
 # raise SkipTest
 
@@ -35,7 +36,7 @@ class TestSimpleAlgorithm(Algorithm):
         return data
 
     def predict(self, model, query):
-        pass
+        return query * 2
 
 
 class TestAlgorithm(Algorithm):
@@ -94,11 +95,6 @@ def test_train():
     engine.train()
 
 
-# @SkipTest
-def test_evaluate():
-    engine.evaluate()
-
-
 def test_simple_engine():
     e = SimpleEngine({
         'datasource': {
@@ -115,3 +111,5 @@ def test_simple_engine():
         },
     })
     e.train()
+    prediction = e.predict(3)
+    nt.assert_equals(prediction, 6)
