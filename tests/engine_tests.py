@@ -1,6 +1,10 @@
 import nose.tools as nt
 from unittest import SkipTest
-from tidml import *
+from tidml.model_persistor import ModelPersistor
+from tidml.data_source import DataSource
+from tidml.preparator import Preparator
+from tidml.algorithm import Algorithm
+from tidml.engine import BaseEngine, Engine, SimpleEngine
 
 # raise SkipTest
 
@@ -187,3 +191,39 @@ def test_insane_algorithm():
 
 def test_train():
     engine.train()
+
+
+class TestEngine(BaseEngine):
+    def train(self):
+        pass
+
+    def evaluate(self):
+        pass
+
+
+test_config = {
+    'datasource': {
+        'class': 'TestDataSource',
+        'params': {
+            'take': 100
+        }
+    }
+}
+
+
+def test_base_engine_loads_yaml():
+    import tempfile, yaml
+    with tempfile.NamedTemporaryFile(suffix='.yaml') as temp:
+        temp.write(yaml.dump(test_config))
+        temp.flush()
+        e = TestEngine({'config': temp.name})
+        nt.assert_equals(e.params, test_config)
+
+
+def test_base_engine_loads_json():
+    import tempfile, json
+    with tempfile.NamedTemporaryFile(suffix='.json') as temp:
+        temp.write(json.dumps(test_config))
+        temp.flush()
+        e = TestEngine({'config': temp.name})
+        nt.assert_equals(e.params, test_config)

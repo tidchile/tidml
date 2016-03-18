@@ -1,5 +1,6 @@
 import nose.tools as nt
-from tidml.algorithm import *
+from tidml.algorithm import Algorithm
+from tidml.model_persistor import ModelPersistor, PickleModelPersistor
 
 from unittest import SkipTest
 

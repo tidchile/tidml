@@ -1,7 +1,9 @@
 import itertools as it
-import numpy as np
 from collections import namedtuple
-from tidml import DataSource, Algorithm, SimpleEngine
+import numpy as np
+from tidml.engine import SimpleEngine
+from tidml.algorithm import Algorithm
+from tidml.data_source import DataSource
 
 MyQuery = namedtuple('MyQuery', 'day')
 MyTrainingData = namedtuple('MyTrainingData', 'temperatures')

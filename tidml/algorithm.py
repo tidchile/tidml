@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
-from tidml.model_persistor import *
+from tidml.model_persistor import PickleModelPersistor
+
 
 class Algorithm(object):
     """Abstract base class of algorithm classes."""

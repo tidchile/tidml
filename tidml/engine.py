@@ -1,6 +1,6 @@
 import six
-from tidml.preparator import IdentityPreparator
 from abc import ABCMeta, abstractmethod
+from tidml.preparator import IdentityPreparator
 
 
 class BaseEngine(object):
@@ -9,7 +9,11 @@ class BaseEngine(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, params):
-        self._params = params
+        self._params = self._load(params)
+
+    @property
+    def params(self):
+        return self._params
 
     @abstractmethod
     def train(self):
@@ -18,6 +22,21 @@ class BaseEngine(object):
     @abstractmethod
     def evaluate(self):
         pass
+
+    @staticmethod
+    def _load(params):
+        if params.get('config'):
+            filepath = params.get('config')
+            config = open(filepath, 'r').read()
+            import os
+            ext = os.path.splitext(filepath)[1]
+            if ext == '.yaml':
+                import yaml
+                params = yaml.load(config)
+            elif ext == '.json':
+                import json
+                params = json.loads(config)
+        return params
 
 
 class Engine(BaseEngine):
@@ -49,7 +68,7 @@ class Engine(BaseEngine):
         :return: Prediction.
         """
         algorithm = self._instantiate('algorithm')
-        model = algorithm.persistor.load()
+        model = algorithm.persistor.load()  # TODO: Load once on Serving class
         prediction = algorithm.predict(model, query)
         return prediction
 

@@ -1,5 +1,5 @@
 import nose.tools as nt
-from tidml.data_source import *
+from tidml.data_source import DataSource
 
 from unittest import SkipTest
 
