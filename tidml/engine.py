@@ -15,11 +15,24 @@ class BaseEngine(Parameterized):
 
     @abstractmethod
     def train(self):
-        pass
+        """Train an algorithm.
+        """
 
     @abstractmethod
-    def evaluate(self):
-        pass
+    def predict(self, query):
+        """Predict a query.
+
+        :param query: Query.
+        :return: Prediction.
+        """
+
+    @abstractmethod
+    def evaluate(self, query):
+        """Evaluate the algorithm.
+
+        :return: List of evaluation info, and tuple of
+                 query, predicted result, and actual result.
+        """
 
     @staticmethod
     def _load(params):
@@ -38,8 +51,6 @@ class Engine(BaseEngine):
 
     def train(self):
         """Train an algorithm.
-
-        :return: Model
         """
         datasource = self._instantiate(self.params['datasource'])
         training_data = datasource.read_training()
@@ -81,9 +92,9 @@ class Engine(BaseEngine):
         :return: List of evaluation info, and tuple of
                  query, predicted result, and actual result.
         """
-        pass
 
-    def _instantiate(self, spec):
+    @staticmethod
+    def _instantiate(spec):
         """Instantiate class with params.
         """
         ctor = spec['class']

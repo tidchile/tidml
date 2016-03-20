@@ -13,7 +13,6 @@ class DataSource(Parameterized):
 
         :return: Training data.
         """
-        pass
 
     def read_eval(self):
         """
@@ -22,4 +21,3 @@ class DataSource(Parameterized):
 
         :return: Eval data.
         """
-        pass

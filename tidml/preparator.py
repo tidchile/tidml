@@ -14,7 +14,6 @@ class Preparator(Parameterized):
         :param data: Training data.
         :return: Prepared data.
         """
-        pass
 
 
 class IdentityPreparator(Preparator):

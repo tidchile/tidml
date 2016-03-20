@@ -14,7 +14,6 @@ cov:
 	nosetests --with-coverage \
 		--cover-package=tidml \
 		--cover-inclusive \
-		--cover-branches \
 		--cover-erase \
 		--cover-html
 	open cover/index.html

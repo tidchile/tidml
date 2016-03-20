@@ -15,7 +15,6 @@ class Algorithm(Parameterized):
         :param data: Training data.
         :return: Model.
         """
-        pass
 
     @abstractmethod
     def predict(self, model, query):
@@ -25,7 +24,6 @@ class Algorithm(Parameterized):
         :param query: Query.
         :return: Predicted result.
         """
-        pass
 
     @property
     def persistor(self):

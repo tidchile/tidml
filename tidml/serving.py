@@ -15,7 +15,6 @@ class Serving(Parameterized):
         :param results: Results dictionary.
         :return: Final result.
         """
-        pass
 
 
 class FirstServing(Serving):

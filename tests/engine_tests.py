@@ -198,6 +198,9 @@ class TestEngine(BaseEngine):
     def train(self):
         pass
 
+    def predict(self, query):
+        super(TestEngine, self).predict(query)
+
     def evaluate(self):
         pass
 
