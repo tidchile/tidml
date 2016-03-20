@@ -131,7 +131,8 @@ def test_simple_engine():
         },
     })
     e.train()
-    prediction = e.predict(3)
+    models = e.load_models()
+    prediction = e.predict(models, 3)
     nt.assert_equals(prediction, 6)
 
 
@@ -194,8 +195,8 @@ class TestEngine(BaseEngine):
     def train(self):
         pass
 
-    def predict(self, query):
-        super(TestEngine, self).predict(query)
+    def predict(self, query, models):
+        super(TestEngine, self).predict(query, models)
 
     def evaluate(self):
         pass

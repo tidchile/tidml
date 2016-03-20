@@ -4,7 +4,8 @@ from examples.hello_world import MyEngineFactory, MyQuery
 def main():
     e = MyEngineFactory.create()
     e.train()
-    prediction = e.predict(MyQuery(day='mon'))
+    models = e.load_models()
+    prediction = e.predict(models, MyQuery(day='mon'))
     print prediction
 
 

@@ -15,9 +15,6 @@ class BaseEngine(Parameterized):
             filepath = params.get('config')
             params = load_config(filepath)
 
-        if params.get('algorithm'):
-            params['algorithms'] = {'': params['algorithm']}
-
         super(BaseEngine, self).__init__(params)
 
     @abstractmethod
@@ -26,10 +23,11 @@ class BaseEngine(Parameterized):
         """
 
     @abstractmethod
-    def predict(self, query):
+    def predict(self, models, query):
         """Predict a query.
 
         :param query: Query.
+        :param models: Models.
         :return: Prediction.
         """
 
@@ -45,40 +43,69 @@ class BaseEngine(Parameterized):
 class Engine(BaseEngine):
     """Engine default implementation."""
 
+    @property
+    def datasource(self):
+        return init_spec(self.params['datasource'])
+
+    @property
+    def preparator(self):
+        return init_spec(self.params.get('preparator', IdentityPreparator))
+
+    @property
+    def algorithms(self):
+        if self.params.get('algorithm'):
+            algorithms = {'': self.params['algorithm']}
+        else:
+            algorithms = self.params['algorithms']
+
+        for algo_key, algo_spec in algorithms.iteritems():
+            algorithm = init_spec(algo_spec)
+            yield algo_key, algorithm
+
+    @property
+    def serving(self):
+        return init_spec(self.params.get('serving', FirstServing))
+
     def train(self):
         """Train an algorithm.
         """
-        datasource = init_spec(self.params['datasource'])
-        training_data = datasource.read_training()
+        training_data = self.datasource.read_training()
         self._sanity_check(training_data, 'training_data')
 
-        preparator = init_spec(self.params.get('preparator', IdentityPreparator))
-        prepared_data = preparator.prepare(training_data)
+        prepared_data = self.preparator.prepare(training_data)
         self._sanity_check(prepared_data, 'prepared_data')
 
-        for algo_key, algo_spec in self.params['algorithms'].iteritems():
-            algorithm = init_spec(algo_spec)
+        for algo_key, algorithm in self.algorithms:
             model = algorithm.train(prepared_data)
             self._sanity_check(model, algo_key + ' model')
 
             algorithm.persistor.save(model)
 
-    def predict(self, query):
+    def load_models(self):
+        """Load persisted models.
+
+        :return: Models
+        """
+        models = {}
+        for algo_key, algorithm in self.algorithms:
+            model = algorithm.persistor.load()
+            models[algo_key] = model
+        return models
+
+    def predict(self, models, query):
         """Predict a query.
 
+        :param models: Models.
         :param query: Query.
         :return: Prediction.
         """
         predictions = {}
-
-        for algo_key, algo_spec in self.params['algorithms'].iteritems():
-            algorithm = init_spec(algo_spec)
-            model = algorithm.persistor.load()  # TODO: Load once on Workflow
+        for algo_key, algorithm in self.algorithms:
+            model = models[algo_key]
             prediction = algorithm.predict(model, query)
             predictions[algo_key] = prediction
 
-        serving = init_spec(self.params.get('serving', FirstServing))
-        prediction = serving.serve(query, predictions)
+        prediction = self.serving.serve(query, predictions)
 
         return prediction
 
