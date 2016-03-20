@@ -42,7 +42,7 @@ class DataWithSanityCheck(object):
 class TestDataSource(DataSource):
     def read_training(self):
         import pandas as pd
-        df = pd.read_csv(self._params['csv'], sep='\t')
+        df = pd.read_csv(self.params['csv'], sep='\t')
         return DataWithSanityCheck(self.params, df)
 
 
@@ -68,7 +68,7 @@ class TestAlgorithm(Algorithm):
 
     @property
     def persistor(self):
-        return PandasCsvModelPersistor(self._params)
+        return PandasCsvModelPersistor(self.params)
 
 
 class PandasCsvModelPersistor(ModelPersistor):

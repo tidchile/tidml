@@ -10,7 +10,7 @@ def test_cannot_instantiate():
 
 class TestPreparator(Preparator):
     def prepare(self, data):
-        sep = self._params['sep']
+        sep = self.params['sep']
         return sep + data.upper() + sep
 
 

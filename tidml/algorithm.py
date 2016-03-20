@@ -1,18 +1,12 @@
 from abc import ABCMeta, abstractmethod
 from tidml.model_persistor import PickleModelPersistor
+from tidml.utils import Parameterized
 
 
-class Algorithm(object):
+class Algorithm(Parameterized):
     """Abstract base class of algorithm classes."""
 
     __metaclass__ = ABCMeta
-
-    def __init__(self, params={}):
-        self._params = params
-
-    @property
-    def params(self):
-        return self._params
 
     @abstractmethod
     def train(self, data):
@@ -40,5 +34,5 @@ class Algorithm(object):
         :return: Model persistor instance.
         """
         return PickleModelPersistor({
-            'model.pickle': self._params['model.pickle']
+            'model.pickle': self.params['model.pickle']
         })

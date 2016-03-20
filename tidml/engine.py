@@ -2,19 +2,16 @@ import six
 from abc import ABCMeta, abstractmethod
 from tidml.preparator import IdentityPreparator
 from tidml.serving import FirstServing
+from tidml.utils import Parameterized
 
 
-class BaseEngine(object):
+class BaseEngine(Parameterized):
     """Abstract base class of engine classes."""
 
     __metaclass__ = ABCMeta
 
     def __init__(self, params):
-        self._params = self._load(params)
-
-    @property
-    def params(self):
-        return self._params
+        super(BaseEngine, self).__init__(self._load(params))
 
     @abstractmethod
     def train(self):
