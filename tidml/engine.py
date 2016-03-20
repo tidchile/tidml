@@ -1,6 +1,7 @@
 import six
 from abc import ABCMeta, abstractmethod
 from tidml.preparator import IdentityPreparator
+from tidml.serving import FirstServing
 
 
 class BaseEngine(object):
@@ -36,6 +37,10 @@ class BaseEngine(object):
             elif ext == '.json':
                 import json
                 params = json.loads(config)
+
+        if params.get('algorithm'):
+            params['algorithms'] = {'': params['algorithm']}
+
         return params
 
 
@@ -47,19 +52,20 @@ class Engine(BaseEngine):
 
         :return: Model
         """
-        datasource = self._instantiate('datasource')
+        datasource = self._instantiate(self.params['datasource'])
         training_data = datasource.read_training()
         self._sanity_check(training_data, 'training_data')
 
-        preparator = self._instantiate('preparator')
+        preparator = self._instantiate(self.params['preparator'])
         prepared_data = preparator.prepare(training_data)
         self._sanity_check(prepared_data, 'prepared_data')
 
-        algorithm = self._instantiate('algorithm')
-        model = algorithm.train(prepared_data)
-        self._sanity_check(model, 'model')
+        for algo_key, algo_spec in self.params['algorithms'].iteritems():
+            algorithm = self._instantiate(algo_spec)
+            model = algorithm.train(prepared_data)
+            self._sanity_check(model, algo_key + ' model')
 
-        algorithm.persistor.save(model)
+            algorithm.persistor.save(model)
 
     def predict(self, query):
         """Predict a query.
@@ -67,9 +73,17 @@ class Engine(BaseEngine):
         :param query: Query.
         :return: Prediction.
         """
-        algorithm = self._instantiate('algorithm')
-        model = algorithm.persistor.load()  # TODO: Load once on Serving class
-        prediction = algorithm.predict(model, query)
+        predictions = {}
+
+        for algo_key, algo_spec in self.params['algorithms'].iteritems():
+            algorithm = self._instantiate(algo_spec)
+            model = algorithm.persistor.load()  # TODO: Load once on Workflow
+            prediction = algorithm.predict(model, query)
+            predictions[algo_key] = prediction
+
+        serving = self._instantiate(self.params['serving'])
+        prediction = serving.serve(query, predictions)
+
         return prediction
 
     def evaluate(self, query):
@@ -80,10 +94,9 @@ class Engine(BaseEngine):
         """
         pass
 
-    def _instantiate(self, name):
+    def _instantiate(self, spec):
         """Instantiate class with params.
         """
-        spec = self._params[name]
         ctor = spec['class']
         params = spec.get('params', {})
 
@@ -116,6 +129,8 @@ class SimpleEngine(Engine):
             'preparator': {
                 'class': IdentityPreparator,
             },
-            'algorithm': params['algorithm'],  # TODO: {'': params['algorithm']}
-            # 'serving': tidml.FirstServing,
+            'algorithm': params['algorithm'],
+            'serving': {
+                'class': FirstServing,
+            },
         })
