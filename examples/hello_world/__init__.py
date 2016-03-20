@@ -1,7 +1,7 @@
 import itertools as it
 from collections import namedtuple
 import numpy as np
-from tidml.engine import SimpleEngine
+from tidml.engine import Engine
 from tidml.algorithm import Algorithm
 from tidml.data_source import DataSource
 
@@ -51,10 +51,8 @@ class MyAlgorithm(Algorithm):
 class MyEngineFactory(object):
     @staticmethod
     def create():
-        return SimpleEngine({
-            "datasource": {
-                "class": MyDataSource
-            },
+        return Engine({
+            "datasource": MyDataSource,
             "algorithm": {
                 "class": MyAlgorithm,
                 "params": {

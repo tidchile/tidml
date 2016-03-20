@@ -1,8 +1,7 @@
-import six
 from abc import ABCMeta, abstractmethod
 from tidml.preparator import IdentityPreparator
 from tidml.serving import FirstServing
-from tidml.utils import Parameterized, load_config
+from tidml.utils import Parameterized, load_config, init_spec
 
 
 class BaseEngine(Parameterized):
@@ -11,7 +10,15 @@ class BaseEngine(Parameterized):
     __metaclass__ = ABCMeta
 
     def __init__(self, params):
-        super(BaseEngine, self).__init__(self._load(params))
+
+        if params.get('config'):
+            filepath = params.get('config')
+            params = load_config(filepath)
+
+        if params.get('algorithm'):
+            params['algorithms'] = {'': params['algorithm']}
+
+        super(BaseEngine, self).__init__(params)
 
     @abstractmethod
     def train(self):
@@ -34,17 +41,6 @@ class BaseEngine(Parameterized):
                  query, predicted result, and actual result.
         """
 
-    @staticmethod
-    def _load(params):
-        if params.get('config'):
-            filepath = params.get('config')
-            params = load_config(filepath)
-
-        if params.get('algorithm'):
-            params['algorithms'] = {'': params['algorithm']}
-
-        return params
-
 
 class Engine(BaseEngine):
     """Engine default implementation."""
@@ -52,16 +48,16 @@ class Engine(BaseEngine):
     def train(self):
         """Train an algorithm.
         """
-        datasource = self._instantiate(self.params['datasource'])
+        datasource = init_spec(self.params['datasource'])
         training_data = datasource.read_training()
         self._sanity_check(training_data, 'training_data')
 
-        preparator = self._instantiate(self.params['preparator'])
+        preparator = init_spec(self.params.get('preparator', IdentityPreparator))
         prepared_data = preparator.prepare(training_data)
         self._sanity_check(prepared_data, 'prepared_data')
 
         for algo_key, algo_spec in self.params['algorithms'].iteritems():
-            algorithm = self._instantiate(algo_spec)
+            algorithm = init_spec(algo_spec)
             model = algorithm.train(prepared_data)
             self._sanity_check(model, algo_key + ' model')
 
@@ -76,12 +72,12 @@ class Engine(BaseEngine):
         predictions = {}
 
         for algo_key, algo_spec in self.params['algorithms'].iteritems():
-            algorithm = self._instantiate(algo_spec)
+            algorithm = init_spec(algo_spec)
             model = algorithm.persistor.load()  # TODO: Load once on Workflow
             prediction = algorithm.predict(model, query)
             predictions[algo_key] = prediction
 
-        serving = self._instantiate(self.params['serving'])
+        serving = init_spec(self.params.get('serving', FirstServing))
         prediction = serving.serve(query, predictions)
 
         return prediction
@@ -94,43 +90,7 @@ class Engine(BaseEngine):
         """
 
     @staticmethod
-    def _instantiate(spec):
-        """Instantiate class with params.
-        """
-        ctor = spec['class']
-        params = spec.get('params', {})
-
-        if isinstance(ctor, six.string_types):
-            import importlib
-            module_name, class_name = ctor.rsplit(".", 1)
-            module = importlib.import_module(module_name)
-            ctor = getattr(module, class_name)
-
-        instance = ctor(params)
-
-        return instance
-
-    @staticmethod
     def _sanity_check(data, label):
         # TODO: logging
         if hasattr(data, 'sanity_check'):
             data.sanity_check(label)
-
-
-class SimpleEngine(Engine):
-    """Engine with default simple configuration.
-
-    - Identity preparator.
-    """
-
-    def __init__(self, params):
-        super(SimpleEngine, self).__init__({
-            'datasource': params['datasource'],
-            'preparator': {
-                'class': IdentityPreparator,
-            },
-            'algorithm': params['algorithm'],
-            'serving': {
-                'class': FirstServing,
-            },
-        })

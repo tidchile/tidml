@@ -1,4 +1,5 @@
 import os
+import six
 from abc import ABCMeta
 
 
@@ -38,3 +39,38 @@ def prepare_path(filepath):
     if not os.path.exists(dirname):
         os.makedirs(dirname)
     return filepath
+
+
+def init_spec(spec):
+    """Instantiate a parameterized class using a specification.
+
+    :param spec:
+    """
+
+    if not isinstance(spec, dict):
+        # if not a dict, should be a class or a string
+        ctor = spec
+        params = {}
+    else:
+        # extract spec properties
+        ctor = spec['class']
+        params = spec.get('params', {})
+
+    # load a class from string
+    if isinstance(ctor, six.string_types):
+        import importlib
+        module_name, class_name = ctor.rsplit(".", 1)
+        module = importlib.import_module(module_name)
+        ctor = getattr(module, class_name)
+
+    # validate type
+    if not issubclass(ctor, Parameterized):
+        raise RuntimeError("'{}' is not subclass of '{}'".format(
+            ctor.__name__,
+            Parameterized.__name__
+        ))
+
+    # now we're talking...
+    instance = ctor(params)
+
+    return instance

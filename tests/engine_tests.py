@@ -4,7 +4,7 @@ from tidml.model_persistor import ModelPersistor
 from tidml.data_source import DataSource
 from tidml.preparator import Preparator
 from tidml.algorithm import Algorithm
-from tidml.engine import BaseEngine, Engine, SimpleEngine
+from tidml.engine import BaseEngine, Engine
 from tidml.utils import prepare_path
 
 # raise SkipTest
@@ -96,14 +96,12 @@ def test_setup():
     global engine
     engine = Engine({
         'datasource': {
-            'class': "tests.engine_tests.TestDataSource",
+            'class': TestDataSource,
             'params': {
                 'csv': test_data_file,
             },
         },
-        'preparator': {
-            'class': TestPreparator,
-        },
+        'preparator': TestPreparator,
         'algorithm': {
             'class': TestAlgorithm,
             'params': {
@@ -118,7 +116,7 @@ def test_train():
 
 
 def test_simple_engine():
-    e = SimpleEngine({
+    e = Engine({
         'datasource': {
             'class': TestDataSource,
             'params': {
@@ -176,9 +174,7 @@ def test_insane_algorithm():
                 'csv': test_data_file,
             },
         },
-        'preparator': {
-            'class': TestPreparator,
-        },
+        'preparator': TestPreparator,
         'algorithm': {
             'class': TestAlgorithm,
             'params': {
