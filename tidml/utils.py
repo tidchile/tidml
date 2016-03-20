@@ -26,3 +26,15 @@ def load_config(filepath):
         return json.loads(config)
     else:
         raise NotImplementedError('Not implemented config format ' + ext)
+
+
+def prepare_path(filepath):
+    """
+    :param filepath:
+    :rtype: str
+    """
+    filepath = os.path.expanduser(filepath)
+    dirname = os.path.dirname(filepath)
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+    return filepath

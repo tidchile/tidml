@@ -5,6 +5,7 @@ from tidml.data_source import DataSource
 from tidml.preparator import Preparator
 from tidml.algorithm import Algorithm
 from tidml.engine import BaseEngine, Engine, SimpleEngine
+from tidml.utils import prepare_path
 
 # raise SkipTest
 
@@ -19,7 +20,7 @@ def make_test_data():
     data = data[0]
     df = pd.DataFrame(data, columns=list("ABCD"))
 
-    ModelPersistor.prepare_path(test_data_file)
+    prepare_path(test_data_file)
     df.to_csv(test_data_file, sep='\t', index=False)
 
 
