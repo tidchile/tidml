@@ -227,3 +227,13 @@ def test_base_engine_loads_json():
         temp.flush()
         e = TestEngine({'config': temp.name})
         nt.assert_equals(e.params, test_config)
+
+
+def test_base_engine_loads_not_supported_format():
+    import tempfile, json
+    with tempfile.NamedTemporaryFile(suffix='.xml') as temp:
+        nt.assert_raises_regexp(
+            NotImplementedError,
+            'Not implemented config format \.xml',
+            TestEngine, {'config': temp.name}
+        )

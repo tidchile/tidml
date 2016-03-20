@@ -2,7 +2,7 @@ import six
 from abc import ABCMeta, abstractmethod
 from tidml.preparator import IdentityPreparator
 from tidml.serving import FirstServing
-from tidml.utils import Parameterized
+from tidml.utils import Parameterized, load_config
 
 
 class BaseEngine(Parameterized):
@@ -25,15 +25,7 @@ class BaseEngine(Parameterized):
     def _load(params):
         if params.get('config'):
             filepath = params.get('config')
-            config = open(filepath, 'r').read()
-            import os
-            ext = os.path.splitext(filepath)[1]
-            if ext == '.yaml':
-                import yaml
-                params = yaml.load(config)
-            elif ext == '.json':
-                import json
-                params = json.loads(config)
+            params = load_config(filepath)
 
         if params.get('algorithm'):
             params['algorithms'] = {'': params['algorithm']}
