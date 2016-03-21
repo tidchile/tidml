@@ -1,4 +1,4 @@
-# TODO: Classifier example
+# TODO: Multinomial Naive Bayes classifier example
 # TODO: Evaluation / Hyperparameter tuning
 # TODO: Incremental training (partial_fit)
 # TODO: CLI
