@@ -2,10 +2,10 @@ from examples.hello_world import MyEngineFactory, MyQuery
 
 
 def main():
-    e = MyEngineFactory.create()
-    e.train()
-    models = e.load_models()
-    prediction = e.predict(models, MyQuery(day='mon'))
+    engine = MyEngineFactory.create()
+    engine.train()
+    models = engine.load_models()
+    prediction = engine.predict(models, MyQuery(day='mon'))
     print prediction
 
 

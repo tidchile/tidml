@@ -3,12 +3,12 @@ from examples.regression import RegressionQuery as Query
 
 
 def main():
-    e = RegressionEngineFactory.create()
-    e.train()
-    models = e.load_models()
-    print e.predict(models, Query(x=0.07))
-    print e.predict(models, Query(x=-0.03))
-    print e.predict(models, Query(x=1))
+    engine = RegressionEngineFactory.create()
+    engine.train()
+    models = engine.load_models()
+    print engine.predict(models, Query(x=0.07))
+    print engine.predict(models, Query(x=-0.03))
+    print engine.predict(models, Query(x=1))
 
 
 if __name__ == '__main__':
