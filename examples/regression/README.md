@@ -13,7 +13,7 @@ including which classes implement each component and parameter values.
 
 ## DataSource
 
-Training data is *diabetes* dataset built in scikit-learn.
+Training data is the *diabetes* dataset built in scikit-learn.
 
 ## Preparator
 
