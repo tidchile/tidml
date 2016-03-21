@@ -5,6 +5,7 @@ from tidml.data_source import DataSource
 from tidml.preparator import Preparator
 from tidml.algorithm import Algorithm
 from tidml.engine import BaseEngine, Engine
+from tidml.serving import Serving
 from tidml.utils import prepare_path
 
 # raise SkipTest
@@ -134,6 +135,50 @@ def test_simple_engine():
     models = e.load_models()
     prediction = e.predict(models, 3)
     nt.assert_equals(prediction, 6)
+
+
+class TestEmptyDataSource(DataSource):
+    def read_training(self):
+        pass
+
+
+class TestMultiAlgorithm(Algorithm):
+
+    def train(self, data):
+        pass
+
+    def predict(self, model, query):
+        return self.params['p']
+
+
+class TestIdentityServing(Serving):
+    def serve(self, query, results):
+        return results
+
+
+def test_multiple_algorithms_engine():
+    e = Engine({
+        'datasource': TestEmptyDataSource,
+        'algorithms': {
+            'algo1': {
+                'class': TestMultiAlgorithm,
+                'params': {'p': 'A'},
+            },
+            'algo2': {
+                'class': TestMultiAlgorithm,
+                'params': {'p': 'B'},
+            },
+        },
+        'serving': TestIdentityServing,
+    })
+    models = {
+        'algo1': object(),
+        'algo2': object(),
+    }
+    nt.assert_equals(e.predict(models, None), {
+        'algo1': 'A',
+        'algo2': 'B',
+    })
 
 
 def test_insane_datasource():
