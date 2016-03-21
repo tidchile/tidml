@@ -1,3 +1,11 @@
+# TODO: Classifier example
+# TODO: Evaluation / Hyperparameter tuning
+# TODO: Incremental training (partial_fit)
+# TODO: CLI
+# TODO: Flask/Django/other microservice
+# TODO: Docker/other deployment
+# TODO: H2O.ai integration
+
 try:
     from setuptools import setup
 except ImportError:
