@@ -28,6 +28,7 @@ class RegressionAlgorithm(Algorithm):
     def train(self, data):
         model = linear_model.LinearRegression()
         model.fit(data.x, data.y)
+        print model
         return model
 
     def predict(self, model, query):
