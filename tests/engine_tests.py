@@ -89,12 +89,8 @@ class PandasCsvModelPersistor(ModelPersistor):
         model.payload.to_csv(self._path, index=False)
 
 
-engine = Engine
-
-
 def test_setup():
     make_test_data()
-    global engine
     engine = Engine({
         'datasource': {
             'class': TestDataSource,
@@ -110,14 +106,11 @@ def test_setup():
             },
         },
     })
-
-
-def test_train():
     engine.train()
 
 
 def test_simple_engine():
-    e = Engine({
+    engine = Engine({
         'datasource': {
             'class': TestDataSource,
             'params': {
@@ -131,9 +124,9 @@ def test_simple_engine():
             },
         },
     })
-    e.train()
-    models = e.load_models()
-    prediction = e.predict(models, 3)
+    engine.train()
+    models = engine.load_models()
+    prediction = engine.predict(models, 3)
     nt.assert_equals(prediction, 6)
 
 
@@ -157,7 +150,7 @@ class TestIdentityServing(Serving):
 
 
 def test_multiple_algorithms_engine():
-    e = Engine({
+    engine = Engine({
         'datasource': TestEmptyDataSource,
         'algorithms': {
             'algo1': {
@@ -175,14 +168,14 @@ def test_multiple_algorithms_engine():
         'algo1': object(),
         'algo2': object(),
     }
-    nt.assert_equals(e.predict(models, None), {
+    nt.assert_equals(engine.predict(models, None), {
         'algo1': 'A',
         'algo2': 'B',
     })
 
 
 def test_insane_datasource():
-    e = Engine({
+    engine = Engine({
         'datasource': {
             'class': TestDataSource,
             'params': {
@@ -191,11 +184,11 @@ def test_insane_datasource():
             },
         },
     })
-    nt.assert_raises_regexp(RuntimeError, 'training_data insane!', e.train)
+    nt.assert_raises_regexp(RuntimeError, 'training_data insane!', engine.train)
 
 
 def test_insane_preparator():
-    e = Engine({
+    engine = Engine({
         'datasource': {
             'class': TestDataSource,
             'params': {
@@ -209,11 +202,11 @@ def test_insane_preparator():
             },
         },
     })
-    nt.assert_raises_regexp(RuntimeError, 'prepared_data insane!', e.train)
+    nt.assert_raises_regexp(RuntimeError, 'prepared_data insane!', engine.train)
 
 
 def test_insane_algorithm():
-    e = Engine({
+    engine = Engine({
         'datasource': {
             'class': TestDataSource,
             'params': {
@@ -229,11 +222,7 @@ def test_insane_algorithm():
             },
         },
     })
-    nt.assert_raises_regexp(RuntimeError, 'model insane!', e.train)
-
-
-def test_train():
-    engine.train()
+    nt.assert_raises_regexp(RuntimeError, 'model insane!', engine.train)
 
 
 class TestEngine(BaseEngine):
@@ -262,8 +251,8 @@ def test_base_engine_loads_yaml():
     with tempfile.NamedTemporaryFile(suffix='.yaml') as temp:
         temp.write(yaml.dump(test_config))
         temp.flush()
-        e = TestEngine({'config': temp.name})
-        nt.assert_equals(e.params, test_config)
+        engine = TestEngine({'config': temp.name})
+        nt.assert_equals(engine.params, test_config)
 
 
 def test_base_engine_loads_json():
@@ -271,8 +260,8 @@ def test_base_engine_loads_json():
     with tempfile.NamedTemporaryFile(suffix='.json') as temp:
         temp.write(json.dumps(test_config))
         temp.flush()
-        e = TestEngine({'config': temp.name})
-        nt.assert_equals(e.params, test_config)
+        engine = TestEngine({'config': temp.name})
+        nt.assert_equals(engine.params, test_config)
 
 
 def test_base_engine_loads_not_supported_format():
