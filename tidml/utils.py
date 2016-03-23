@@ -92,3 +92,11 @@ def extend(*args, **kwargs):
         return fn
 
     return decorator
+
+
+def guard(name, arg, the_type=None):
+    if the_type is None:
+        if arg is None:
+            raise TypeError("Argument '{}' should have a value".format(name))
+    elif type(arg) is not the_type:
+        raise TypeError("Argument '{}' should be {}".format(name, the_type))

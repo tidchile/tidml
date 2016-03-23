@@ -1,5 +1,5 @@
 import nose.tools as nt
-from tidml.utils import prepare_path, init_spec, Parameterized, extend
+from tidml.utils import prepare_path, init_spec, Parameterized, extend, guard
 
 
 def test_prepare_path():
@@ -83,3 +83,27 @@ def test_extend():
     nt.assert_equals(t.c(), 5)
     nt.assert_equals(t.d(), 6)
     nt.assert_equals(x.d(), 6)
+
+
+def test_guard_pass_none():
+    guard('arg', 123)
+
+
+def test_guard_pass_type():
+    guard('arg', 123, int)
+
+
+def test_guard_fail_none():
+    nt.assert_raises_regexp(
+        TypeError,
+        "Argument 'arg' should have a value",
+        guard, 'arg', None
+    )
+
+
+def test_guard_fail_type():
+    nt.assert_raises_regexp(
+        TypeError,
+        "Argument 'arg' should be <type 'str'>",
+        guard, 'arg', 123, str
+    )
