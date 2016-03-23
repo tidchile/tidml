@@ -4,18 +4,20 @@ import numpy as np
 from tidml.engine import Engine
 from tidml.algorithm import Algorithm
 from tidml.data_source import DataSource
+from tidml.utils import extend
 
 MyQuery = namedtuple('MyQuery', 'day')
 MyTrainingData = namedtuple('MyTrainingData', 'temperatures')
 MyPredictedResult = namedtuple('MyPredictedResult', 'temperature')
+MyModel = namedtuple('MyModel', 'temperatures')
 
 
-class MyModel(namedtuple('MyModel', 'temperatures')):
-    def sanity_check(self, label):
-        days = ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
-        for k in self.temperatures.keys():
-            if k not in days:
-                raise RuntimeError("{}: Invalid day '{}'".format(label, k))
+@extend(MyModel)
+def sanity_check(self, label):
+    days = ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
+    for k in self.temperatures.keys():
+        if k not in days:
+            raise RuntimeError("{}: Invalid day '{}'".format(label, k))
 
 
 class MyDataSource(DataSource):

@@ -1,5 +1,5 @@
 import nose.tools as nt
-from tidml.utils import prepare_path, init_spec, Parameterized
+from tidml.utils import prepare_path, init_spec, Parameterized, extend
 
 
 def test_prepare_path():
@@ -57,3 +57,29 @@ def test_init_spec_subclass_error():
         RuntimeError,
         "'TestNotParameterizedClass' is not subclass of 'Parameterized'",
         init_spec, TestNotParameterizedClass)
+
+
+def test_extend():
+    from collections import namedtuple
+
+    named_tuple = namedtuple('NamedTuple', 'a, b')
+
+    @extend(named_tuple)
+    def c(self):
+        return self.a + self.b
+
+    class AnotherClass(object):
+        def __init__(self):
+            self.a = 1
+            self.b = 6
+
+    t = named_tuple(a=2, b=3)
+    x = AnotherClass()
+
+    @extend(t, x, name='d')
+    def the_method_to_extend(self):
+        return self.a * self.b
+
+    nt.assert_equals(t.c(), 5)
+    nt.assert_equals(t.d(), 6)
+    nt.assert_equals(x.d(), 6)

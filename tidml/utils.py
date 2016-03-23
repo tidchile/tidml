@@ -74,3 +74,21 @@ def init_spec(spec):
     instance = ctor(params)
 
     return instance
+
+
+def extend(*args, **kwargs):
+    def decorator(fn):
+        name = kwargs.get('name', fn.__name__)
+        for obj in args:
+            if type(obj) == type:
+                # extend class
+                setattr(obj, name, fn)
+            else:
+                # extend instance
+                import types
+                m = types.MethodType(fn, obj, type(obj))
+                setattr(type(obj), name, m)
+
+        return fn
+
+    return decorator
