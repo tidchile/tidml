@@ -1,0 +1,8 @@
+datasource: examples.dase.gnb_classifier.ClassifierDataSource
+
+algorithm:
+  class: examples.dase.gnb_classifier.ClassifierAlgorithm
+  params:
+    model.pickle: ~/.tidml/gnb_classifier/model.pkl
+
+serving: examples.dase.gnb_classifier.ClassifierServing

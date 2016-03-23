@@ -1,9 +1,10 @@
 from collections import namedtuple
 from sklearn import datasets, naive_bayes
-from tidml.data_source import DataSource
-from tidml.algorithm import Algorithm
-from tidml.engine import Engine
-from tidml.serving import Serving
+from tidml.dase.data_source import DataSource
+from tidml.dase.algorithm import Algorithm
+from tidml.dase.engine import Engine
+from tidml.dase.serving import Serving
+
 
 Query = namedtuple('Query', [
     'sepal_length',
@@ -45,4 +46,4 @@ class ClassifierServing(Serving):
 class ClassifierEngineFactory(object):
     @staticmethod
     def create():
-        return Engine({'config': 'examples/gnb_classifier/config.yaml'})
+        return Engine({'config': 'examples/dase/gnb_classifier/config.yaml'})

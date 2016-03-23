@@ -1,0 +1,12 @@
+datasource:
+  class: examples.dase.regression.RegressionDataSource
+
+preparator:
+  class: examples.dase.regression.RegressionPreparator
+  params:
+    take: 200
+
+algorithm:
+  class: examples.dase.regression.RegressionAlgorithm
+  params:
+    model.pickle: ~/.tidml/regression/model.pkl

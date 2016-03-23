@@ -1,10 +1,10 @@
 from collections import namedtuple
 import numpy as np
 from sklearn import datasets, linear_model
-from tidml.data_source import DataSource
-from tidml.preparator import Preparator
-from tidml.algorithm import Algorithm
-from tidml.engine import Engine
+from tidml.dase.data_source import DataSource
+from tidml.dase.preparator import Preparator
+from tidml.dase.algorithm import Algorithm
+from tidml.dase.engine import Engine
 from tidml.utils import guard
 
 PreparedData = namedtuple('PreparedData', 'x, y')
@@ -44,4 +44,4 @@ class RegressionAlgorithm(Algorithm):
 class RegressionEngineFactory(object):
     @staticmethod
     def create():
-        return Engine({'config': 'examples/regression/config.yaml'})
+        return Engine({'config': 'examples/dase/regression/config.yaml'})

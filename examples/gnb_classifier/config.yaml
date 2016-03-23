@@ -1,8 +1,0 @@
-datasource: examples.gnb_classifier.ClassifierDataSource
-
-algorithm:
-  class: examples.gnb_classifier.ClassifierAlgorithm
-  params:
-    model.pickle: ~/.tidml/gnb_classifier/model.pkl
-
-serving: examples.gnb_classifier.ClassifierServing

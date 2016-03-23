@@ -1,11 +1,11 @@
 import nose.tools as nt
 from unittest import SkipTest
-from tidml.model_persistor import ModelPersistor
-from tidml.data_source import DataSource
-from tidml.preparator import Preparator
-from tidml.algorithm import Algorithm
-from tidml.engine import BaseEngine, Engine
-from tidml.serving import Serving
+from tidml.dase.model_persistor import ModelPersistor
+from tidml.dase.data_source import DataSource
+from tidml.dase.preparator import Preparator
+from tidml.dase.algorithm import Algorithm
+from tidml.dase.engine import BaseEngine, Engine
+from tidml.dase.serving import Serving
 from tidml.utils import prepare_path
 
 # raise SkipTest
@@ -265,7 +265,7 @@ def test_base_engine_loads_json():
 
 
 def test_base_engine_loads_not_supported_format():
-    import tempfile, json
+    import tempfile
     with tempfile.NamedTemporaryFile(suffix='.xml') as temp:
         nt.assert_raises_regexp(
             NotImplementedError,

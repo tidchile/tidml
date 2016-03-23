@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
-from tidml.preparator import IdentityPreparator
-from tidml.serving import FirstServing
+from tidml.dase.preparator import IdentityPreparator
+from tidml.dase.serving import FirstServing
 from tidml.utils import Parameterized, load_config, init_spec
 
 

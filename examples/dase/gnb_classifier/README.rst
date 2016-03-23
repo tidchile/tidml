@@ -6,7 +6,7 @@ Run
 
 ::
 
-    python -m examples.gnb_classifier
+    python -m examples.dase.gnb_classifier
 
 Configuration
 -------------

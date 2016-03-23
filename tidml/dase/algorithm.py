@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from tidml.model_persistor import PickleModelPersistor
+from tidml.dase.model_persistor import PickleModelPersistor
 from tidml.utils import Parameterized
 
 

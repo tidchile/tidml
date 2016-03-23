@@ -1,4 +1,4 @@
-from examples.hello_world import MyEngineFactory, MyQuery
+from examples.dase.hello_world import MyEngineFactory, MyQuery
 
 
 def main():

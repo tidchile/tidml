@@ -1,5 +1,5 @@
 import nose.tools as nt
-from tidml.serving import Serving, FirstServing, AverageServing
+from tidml.dase.serving import Serving, FirstServing, AverageServing
 
 
 def test_serving():

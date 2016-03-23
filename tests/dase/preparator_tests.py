@@ -1,5 +1,5 @@
 import nose.tools as nt
-from tidml.preparator import Preparator, IdentityPreparator
+from tidml.dase.preparator import Preparator, IdentityPreparator
 
 from unittest import SkipTest
 

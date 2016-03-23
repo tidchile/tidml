@@ -6,7 +6,7 @@ Run
 
 ::
 
-    python -m examples.regression
+    python -m examples.dase.regression
 
 Configuration
 -------------

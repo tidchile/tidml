@@ -1,5 +1,5 @@
 import nose.tools as nt
-from tidml.model_persistor import ModelPersistor, PickleModelPersistor
+from tidml.dase.model_persistor import ModelPersistor, PickleModelPersistor
 
 from unittest import SkipTest
 
