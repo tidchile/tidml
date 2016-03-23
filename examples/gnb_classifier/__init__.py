@@ -5,13 +5,13 @@ from tidml.algorithm import Algorithm
 from tidml.engine import Engine
 from tidml.serving import Serving
 
-ClassifierQuery = namedtuple('Query', [
+Query = namedtuple('Query', [
     'sepal_length',
     'sepal_width',
     'petal_length',
     'petal_width',
 ])
-ClassifierPrediction = namedtuple('Prediction', 'species')
+Prediction = namedtuple('Prediction', 'species')
 
 
 class ClassifierDataSource(DataSource):
@@ -39,7 +39,7 @@ class ClassifierAlgorithm(Algorithm):
 class ClassifierServing(Serving):
     def serve(self, query, results):
         species = 'Iris ' + ['setosa', 'virginica', 'versicolor'][results['']]
-        return ClassifierPrediction(species=species)
+        return Prediction(species=species)
 
 
 class ClassifierEngineFactory(object):

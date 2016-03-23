@@ -1,5 +1,5 @@
 from examples.regression import RegressionEngineFactory
-from examples.regression import RegressionQuery as Query
+from examples.regression import Query
 
 
 def main():

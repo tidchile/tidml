@@ -1,5 +1,5 @@
 from examples.gnb_classifier import ClassifierEngineFactory
-from examples.gnb_classifier import ClassifierQuery as Query
+from examples.gnb_classifier import Query
 
 
 def main():

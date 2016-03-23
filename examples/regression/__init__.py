@@ -6,8 +6,8 @@ from tidml.preparator import Preparator
 from tidml.algorithm import Algorithm
 from tidml.engine import Engine
 
-RegressionPreparedData = namedtuple('PreparedData', 'x, y')
-RegressionQuery = namedtuple('Query', 'x')
+PreparedData = namedtuple('PreparedData', 'x, y')
+Query = namedtuple('Query', 'x')
 
 
 class RegressionDataSource(DataSource):
@@ -21,7 +21,7 @@ class RegressionPreparator(Preparator):
         x = td.data[:, np.newaxis, 2]
         x_train = x[:take]
         y_train = td.target[:take]
-        return RegressionPreparedData(x=x_train, y=y_train)
+        return PreparedData(x=x_train, y=y_train)
 
 
 class RegressionAlgorithm(Algorithm):
