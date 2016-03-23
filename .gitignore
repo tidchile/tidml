@@ -1,4 +1,9 @@
-*.pyc
-.idea
-.coverage
+.idea/
+.virtualenv/
 cover/
+build/
+dist/
+.eggs/
+tidml.egg-info/
+.coverage
+*.pyc
