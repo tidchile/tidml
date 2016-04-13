@@ -1,0 +1,65 @@
+@startuml
+
+title \nTIDML Sequence Diagram\n
+
+== Training ==
+
+Client -> Engine: train()
+activate Engine
+
+  Engine -> DataSource: read_training()
+  activate DataSource
+  Engine <-- DataSource: training_data
+  deactivate DataSource
+
+loop for each Algorithm
+  Engine -> Algorithm: train(training_data)
+  activate Algorithm
+  Engine <-- Algorithm: model
+  deactivate Algorithm
+
+  Engine -> ModelPersistor: save(model)
+end
+
+deactivate Engine
+
+
+== Prediction ==
+
+Client -> Engine: load_models()
+activate Engine
+
+loop for each Algorithm
+  Engine -> ModelPersistor: load()
+  activate ModelPersistor
+  Engine <-- ModelPersistor: model
+  deactivate ModelPersistor
+end
+
+Client <-- Engine: models
+deactivate Engine
+
+hnote over Client : idle
+
+Client -> Engine: predict(models, query)
+activate Engine
+
+
+loop for each Algorithm
+  Engine -> Algorithm: predict(model, query)
+  activate Algorithm
+  Engine <-- Algorithm: prediction
+  deactivate Algorithm
+end
+
+Engine -> Serving: serve(query, predictions)
+activate Serving
+Engine <-- Serving: final_result
+deactivate Serving
+
+Client <-- Engine: final_result
+
+deactivate Engine
+
+
+@enduml

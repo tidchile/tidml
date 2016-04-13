@@ -1,0 +1,53 @@
+@startuml
+
+title \nTIDML Class Diagram\n
+
+abstract class Algorithm {
+  __init__(params)
+  +train(): Model
+  +predict(): Prediction
+  persistor(): ModelPersistor
+}
+
+abstract class DataSource {
+  __init__(params)
+  +read_training(): Training data
+}
+
+abstract class Preparator {
+  __init__(params)
+  +prepare(data): Prepared data
+}
+
+class IdentityPreparator
+Preparator <|-- IdentityPreparator
+
+
+abstract class Serving {
+  __init__(params)
+  +serve(): Served prediction
+}
+
+Serving <|-- FirstServing
+Serving <|-- AverageServing
+
+abstract class ModelPersistor
+class PickleModelPersistor
+
+ModelPersistor <|-- PickleModelPersistor
+
+class Engine {
+  __init__(config)
+  +train()
+  +load_models(): Models
+  +predict(models, query): Served prediction
+}
+
+Engine *-left- "1" Preparator
+Engine *-up- "1" DataSource
+Engine *-right- "1..*" Algorithm
+Engine *-- "1" Serving
+
+Algorithm *-- ModelPersistor
+
+@enduml
