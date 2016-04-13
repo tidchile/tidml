@@ -1,20 +1,21 @@
-from tidml.algorithm import Algorithm
-from tidml.data_source import DataSource
-from tidml.serving import Serving
-from tidml.preparator import Preparator
-from tidml.engine import Engine
-
 import numpy as np
 from sklearn import linear_model
+from tidml.dase.algorithm import Algorithm
+from tidml.dase.data_source import DataSource
+from tidml.dase.preparator import Preparator
+from tidml.dase.serving import Serving
+
 
 class HousePricesDataSource(DataSource):
     def read_training(self):
-        with open('datos.txt', 'r') as file:
+        with open('examples/dase/house_prices/datos.txt', 'r') as file:
             return file.readlines()
+
 
 class HousePricesPreparator(Preparator):
     def prepare(self, data):
-        return [ map(float, line.split()) for line in data]
+        return [map(float, line.split()) for line in data]
+
 
 class HousePricesPredictor(Algorithm):
     def train(self, data):
@@ -33,6 +34,7 @@ class HousePricesPredictor(Algorithm):
     def predict(self, model, query):
         return model.predict(np.array(query))[0]
 
+
 class HousePricesPredictorRandom(Algorithm):
     def train(self, data):
         return sum
@@ -40,15 +42,7 @@ class HousePricesPredictorRandom(Algorithm):
     def predict(self, model, query):
         return sum(query)
 
+
 class HousePricesServing(Serving):
     def serve(self, query, results):
         print results
-
-if __name__ == "__main__":
-    engine = Engine({'config': 'config.yaml'})
-
-    engine.train()
-    models = engine.load_models()
-
-    engine.predict(models, [0.07, 0.99, 0.0, 0.51, 0.69, 0.77, 0.77, 0.75, 0.44])
-

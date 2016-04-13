@@ -1,0 +1,19 @@
+datasource:
+  class: examples.dase.house_prices.HousePricesDataSource
+
+preparator:
+  class: examples.dase.house_prices.HousePricesPreparator
+
+algorithms:
+  hp1:
+    class: examples.dase.house_prices.HousePricesPredictor
+    params:
+      model.pickle: ./output.pkl
+  hp2:
+    class: examples.dase.house_prices.HousePricesPredictorRandom
+    params:
+      model.pickle: ./output_random.pkl
+
+serving:
+  class: examples.dase.house_prices.HousePricesServing
+
