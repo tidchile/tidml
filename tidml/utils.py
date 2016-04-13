@@ -94,7 +94,7 @@ def extend(*args, **kwargs):
     return decorator
 
 
-def guard(name, arg, the_type=None):
+def require_argument(name, arg, the_type=None):
     if the_type is None:
         if arg is None:
             raise TypeError("Argument '{}' should have a value".format(name))

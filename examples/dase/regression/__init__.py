@@ -5,7 +5,7 @@ from tidml.dase.data_source import DataSource
 from tidml.dase.preparator import Preparator
 from tidml.dase.algorithm import Algorithm
 from tidml.dase.engine import Engine
-from tidml.utils import guard
+from tidml.utils import require_argument
 
 PreparedData = namedtuple('PreparedData', 'x, y')
 Query = namedtuple('Query', 'x')
@@ -18,7 +18,7 @@ class RegressionDataSource(DataSource):
 
 class RegressionPreparator(Preparator):
     def prepare(self, training_data):
-        guard('training_data', training_data)
+        require_argument('training_data', training_data)
         take = self.params['take']
         x = training_data.data[:, np.newaxis, 2]
         x_train = x[:take]
@@ -28,15 +28,15 @@ class RegressionPreparator(Preparator):
 
 class RegressionAlgorithm(Algorithm):
     def train(self, data):
-        guard('data', data, PreparedData)
+        require_argument('data', data, PreparedData)
         model = linear_model.LinearRegression()
         model.fit(data.x, data.y)
         print model
         return model
 
     def predict(self, model, query):
-        guard('model', model, linear_model.LinearRegression)
-        guard('query', query, Query)
+        require_argument('model', model, linear_model.LinearRegression)
+        require_argument('query', query, Query)
         result = model.predict(query.x)
         return result[0]
 
