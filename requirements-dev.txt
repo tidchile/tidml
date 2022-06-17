@@ -5,6 +5,6 @@ twine == 1.6.5
 pipreqs == 0.4.2
 rednose == 0.4.3
 pandas == 0.17.1
-numpy == 1.10.4
+numpy == 1.21.0
 scikit_learn == 0.17.1
 scipy == 0.17.0 # keep it, scikit_learn needs it!
