@@ -2,7 +2,7 @@ coverage == 4.0.3
 nose == 1.3.7
 nose-watch == 0.9.1
 twine == 1.6.5
-pipreqs == 0.4.2
+pipreqs == 0.4.12
 rednose == 0.4.3
 pandas == 0.17.1
 numpy == 1.10.4
